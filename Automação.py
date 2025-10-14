@@ -324,7 +324,7 @@ def login_sistema(context, login, senha):
 
 def resolver_captcha(new_page):
     new_page.get_by_role("img").screenshot(path="captcha.png")
-    api_key = os.getenv('APIKEY_2CAPTCHA', '07353710a01aaea98dea3888aeca8a47')
+    api_key = os.getenv('APIKEY_2CAPTCHA', 'chave')
     result = TwoCaptcha(api_key).normal("captcha.png")
     new_page.fill('#Body_Main_Main_sepConsultaNfpe_ctl21 > div > input', result['code'])
     new_page.locator('#Body_Main_Main_sepConsultaNfpe_btnBuscar > span').click()
@@ -536,9 +536,14 @@ def inferir_periodo(df_nf: pd.DataFrame, dirpath: str):
 def conectar_banco():
     _carregar_fbclient()
     return fdb.connect(
-        host="Server", database="QUESTOR", user="SYSDBA", password="masterkey",
-        port=3050, charset="ISO8859_1",
-    )
+    host=getenv("FB_HOST", "localhost"),
+    database=getenv("FB_DB"),
+    user=getenv("FB_USER"),
+    password=getenv("FB_PASSWORD"),
+    port=int(getenv("FB_PORT", "3050")),
+    charset=getenv("FB_CHARSET", "ISO8859_1"),
+)
+
 
 def _colunas_relacao(con, relacao: str):
     cur = con.cursor()

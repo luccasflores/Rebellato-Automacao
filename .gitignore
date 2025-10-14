@@ -1,0 +1,17 @@
+# Python / ambiente
+__pycache__/
+*.pyc
+.venv/
+.env
+
+# Dados/artefatos locais
+credenciais.txt
+captcha.png
+CNPJ.xlsx
+*.xlsx
+*.csv
+cte_automacao.log
+
+# IDE
+.idea/
+.vscode/
