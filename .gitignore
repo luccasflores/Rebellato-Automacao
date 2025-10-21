@@ -1,17 +1,26 @@
-# Python / ambiente
+# Python
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+*.egg-info/
 .venv/
-.env
-
-# Dados/artefatos locais
-credenciais.txt
-captcha.png
-CNPJ.xlsx
-*.xlsx
-*.csv
-cte_automacao.log
+venv/
 
 # IDE
 .idea/
 .vscode/
+
+# Playwright / logs / builds
+playwright-report/
+test-results/
+*.log
+dist/
+build/
+
+# Credenciais/ambiente
+.env
+*.env
+.env.*
+*.key
+*.pem

@@ -1,51 +1,71 @@
-# Rebellato – Automação Fiscal (SAT SC, NF-e/NFC-e e CTe) + Conciliação
+# ⚙️ Rebellato – Automação Fiscal Completa (NF-e / NFC-e / CTe + Conciliação Firebird)
 
-App desktop em **Python** (Tkinter/CustomTkinter) que:
-- **Baixa NF-e/NFC-e** (por emitente e destinatário) do SAT/SEF-SC via **Playwright**  
-- **Baixa CTe** (por tomador) do SAT/SEF-SC  
-- **Concilia** as planilhas exportadas com o **ERP Questor (Firebird)**  
-- Gera saídas em **Excel** já filtradas e um **resumo consolidado**
+Sistema desktop e CLI desenvolvido em **Python** que automatiza **consultas fiscais** no **SAT/SEF-SC**, emite relatórios de NF-e, NFC-e e CTe, e realiza **conciliação automática com ERP Questor (Firebird)**.
 
-> Foco: reduzir trabalho manual do fiscal, padronizar pastas por mês (`MM.AAAA`) e entregar **auditoria rápida** de lançamentos.
+> Projeto desenvolvido e mantido por **Luccas Flores (M&H Soluções)** como parte de uma suíte de automações fiscais e contábeis.
 
 ---
 
-## ✨ Destaques
-- UI em **CustomTkinter**, com barras de progresso e logs
-- **Resiliência** a captcha (2Captcha)
-- Normalização de nomes/pastas para localizar empresas de uma planilha
-- Conciliação por **valor/base/ICMS** com tolerância
-- Exporta resultados prontos para conferência
+## 🚀 Funcionalidades
+
+✅ **Consulta automática no SAT/SEF-SC**
+- Baixa NF-e / NFC-e (emitente e destinatário)
+- Baixa CTe por tomador  
+- Trata captchas via **2Captcha API**
+
+✅ **Conciliação com Firebird (ERP Questor)**
+- Consulta dados diretamente do banco Questor
+- Cruzamento automático por valor, base e ICMS
+- Geração de relatórios Excel prontos para conferência
+
+✅ **Interface moderna (CustomTkinter)**
+- Três módulos: **SAT**, **Conciliação** e **CTe**
+- Logs em tempo real e barras de progresso
+- Paleta visual da empresa Rebellato Contabilidade
+
+✅ **Execução em Modo Automático (CLI)**
+- Parâmetros por linha de comando
+- Ideal para automações via agendador de tarefas (Windows)
 
 ---
 
-## 🛠️ Stack
-- Python 3.11+
-- **Playwright** (Chromium/Chrome)
-- **Pandas**, **OpenPyXL/XlsxWriter**, **NumPy**
-- **fdb** (Firebird Client)
-- **TwoCaptcha**
-- CustomTkinter
+## 🧱 Arquitetura do Projeto
 
----
+```bash
+Rebellato/
+├── src/
+│   ├── app/
+│   │   └── ui.py               # Interface gráfica (CustomTkinter)
+│   ├── core/
+│   │   ├── utils.py            # Funções auxiliares e normalização
+│   │   ├── firebird.py         # Conexão e consultas no ERP Questor
+│   │   ├── sat_pages.py        # Interações Playwright com o SAT
+│   │   ├── sat_client.py       # Lógica de automação e controle
+│   │   └── reconciliation.py   # Conciliação de NFes e relatórios
+│   ├── cli.py                  # Interface de linha de comando
+│   └── tests/                  # Testes unitários e de integração
+│
+├── docs/                       # Prints e manuais
+├── .env                        # Configurações locais (não versionar)
+├── requirements.txt
+├── README.md
+└── LICENSE
+```
+🧩 Principais Tecnologias:
 
-## 📸 Telas do Sistema
+| Categoria        | Tecnologias                                         |
+| ---------------- | --------------------------------------------------- |
+| Automação Web    | **Playwright (Chromium)**                           |
+| Interface        | **CustomTkinter**, **Pillow**                       |
+| Banco de Dados   | **Firebird (fdb)**                                  |
+| Análise de Dados | **Pandas**, **NumPy**, **OpenPyXL**, **XlsxWriter** |
+| Captcha Solver   | **2Captcha API**                                    |
+| Configuração     | **dotenv**                                          |
+| Testes           | **pytest**, **unittest**                            |
 
-Interface moderna e funcional desenvolvida em **CustomTkinter**, com design adaptado à identidade visual da empresa Rebellato Contabilidade.
+⚙️ Instalação e Execução:
 
-![Sistema de Consulta SAT](docs/sistema-consulta-sat.png)
-
-## 🚀 Como rodar
-
-### 1) Pré-requisitos
-- Windows 10/11, Python 3.11+ e Git  
-- Google Chrome instalado  
-- **Firebird Client** (mesma arquitetura do Python). Deixe o `fbclient.dll` instalável em:
-  - `C:\Program Files\Firebird\Firebird_5_0\bin\fbclient.dll` (ou 4.0)  
-  - ou defina `FIREBIRD_CLIENT_PATH` com o caminho completo
-
-### 2) Clonar e instalar
-```powershell
+1️⃣ Clonar e preparar ambiente:
 git clone https://github.com/luccasflores/Rebellato-Automacao.git
 cd Rebellato-Automacao
 
@@ -53,4 +73,83 @@ python -m venv .venv
 .venv\Scripts\activate
 
 pip install -r requirements.txt
-python -m playwright install --with-deps
+python -m playwright install chromium
+
+
+
+2️⃣ Criar arquivo .env
+
+SAT_USER=seu_usuario
+SAT_PASSWORD=sua_senha
+APIKEY_2CAPTCHA=sua_chave
+FB_HOST=localhost
+FB_DB=C:\caminho\para\questor.fdb
+FB_USER=sysdba
+FB_PASSWORD=masterkey
+FB_PORT=3050
+FB_CHARSET=ISO8859_1
+
+
+3️⃣ Rodar a interface
+
+
+python -m src.app.ui
+
+
+4️⃣ Rodar no modo automático (CLI):
+python -m src.cli --cnpj-xlsx CNPJ.xlsx --saida .\saida
+
+
+🧮 Estrutura de Saída
+
+Durante a execução, o sistema gera automaticamente pastas nomeadas por mês:
+```bash
+📂 09.2025/
+├── Empresa_X/
+│   ├── nfe.xlsx
+│   ├── nfedestinatario.xlsx
+│   ├── nfce.xlsx
+│   ├── nfc_destinatario.xlsx
+│   └── nfedestinatario_conciliado.xlsx
+└── conciliacao_consolidada.xlsx
+
+```
+
+
+🧠 Boas Práticas Implementadas
+
+-Modularização (separação de camadas GUI, Core, CLI)
+
+-Logging padronizado (cte_automacao.log)
+
+-Funções utilitárias reutilizáveis (utils.py)
+
+-Tolerância configurável para conciliação de valores
+
+-Uso de .env seguro (sem credenciais no Git)
+
+## 📸 Screenshots
+
+### Tela principal – (Consulta NF-e / NFC-e)
+![Tela principal](docs/sistema-consulta-sat.png)
+
+
+
+
+🧑‍💻 Autor
+
+Luccas Flores
+Desenvolvedor Python | Especialista em RPA e Automação Fiscal
+M&H Soluções
+
+📧 luccasflores.dev@gmail.com
+
+🌐 https://www.linkedin.com/in/luccas-flores-038757231/
+
+🐙 github.com/luccasflores
+
+
+⚖️ Licença
+
+Este projeto está sob a licença MIT – consulte o arquivo LICENSE
+ para mais detalhes.
